@@ -1,0 +1,31 @@
+version: "3"
+
+networks:
+  loki:
+
+services:
+  loki:
+    image: grafana/loki:latest
+    ports:
+      - "3100:3100"
+    user: "root"
+    volumes:
+      - /usr/local/lokisystem/data/loki/:/etc/loki/
+      - /usr/local/lokisystem/config/loki/:/usr/local/vixtel/insight/lokisystem/config/loki/
+    depends_on:
+      - grafana
+    command: -config.file=/usr/local/lokisystem/config/loki/loki-local-config.yaml
+    networks:
+      - loki
+
+  grafana:
+    image: grafana/grafana:master
+    ports:
+      - "3000:3000"
+    user: "root"
+    volumes:
+      - /usr/local/lokisystem/data/grafana/log:/var/log
+      - /usr/local/lokisystem/data/grafana/data:/var/lib/grafana
+      #- /usr/local/lokisystem/config/grafana/conf:/etc/grafana
+    networks:
+      - loki

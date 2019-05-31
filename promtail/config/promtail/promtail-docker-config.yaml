@@ -1,0 +1,31 @@
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /usr/local/lokisystem/data/promtail/positions.yaml
+
+clients:
+  - url: http://127.0.0.1:3100/api/prom/push
+
+scrape_configs:
+- job_name: dockerlog
+  entry_parser: raw
+  relabel_configs:
+  - action: replace
+    source_labels:
+    - job
+    target_label: all
+    
+  - action: replace
+    source_labels:
+    - filename
+    target_label: _127_0_0_1
+
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      job: dockerlog
+      __path__: /usr/local/lokisystem/log/*.log
+      __regex__: ".+"

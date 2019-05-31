@@ -1,0 +1,18 @@
+version: "3"
+
+networks:
+  loki:
+
+services:
+
+  promtail:
+    image: grafana/promtail:latest
+    volumes:
+      - /var/log:/var/log
+    command:  -config.file=/usr/local/lokisystem/config/promtail/promtail-local-config.yaml
+    environment:
+      - LOKI=""
+    extra_hosts:
+      - "dockerhub:52.1.157.61"
+    networks:
+      - loki
